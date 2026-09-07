@@ -2,9 +2,13 @@ package com.uade.ecommerce.exception;
 
 import com.uade.ecommerce.dto.ErrorRespuestaDTO;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -16,18 +20,38 @@ public class GlobalExceptionHandler {
             ApiException exception,
             HttpServletRequest request
     ) {
-        ErrorRespuestaDTO respuesta =
-                new ErrorRespuestaDTO(
-                        LocalDateTime.now(),
-                        exception.getStatus().value(),
-                        exception.getStatus().getReasonPhrase(),
-                        exception.getMessage(),
-                        request.getRequestURI()
-                );
+        return construirRespuesta(
+                exception.getStatus(),
+                exception.getMessage(),
+                request
+        );
+    }
 
-        return ResponseEntity
-                .status(exception.getStatus())
-                .body(respuesta);
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorRespuestaDTO> manejarJsonInvalido(
+            HttpMessageNotReadableException exception,
+            HttpServletRequest request
+    ) {
+        return construirRespuesta(
+                HttpStatus.BAD_REQUEST,
+                "El cuerpo de la solicitud es inválido o está mal formado",
+                request
+        );
+    }
+
+    @ExceptionHandler({
+            MethodArgumentTypeMismatchException.class,
+            MissingServletRequestParameterException.class
+    })
+    public ResponseEntity<ErrorRespuestaDTO> manejarParametroInvalido(
+            Exception exception,
+            HttpServletRequest request
+    ) {
+        return construirRespuesta(
+                HttpStatus.BAD_REQUEST,
+                "Los parámetros de la solicitud son inválidos",
+                request
+        );
     }
 
     @ExceptionHandler(Exception.class)
@@ -35,17 +59,26 @@ public class GlobalExceptionHandler {
             Exception exception,
             HttpServletRequest request
     ) {
-        ErrorRespuestaDTO respuesta =
-                new ErrorRespuestaDTO(
-                        LocalDateTime.now(),
-                        500,
-                        "Internal Server Error",
-                        "Ocurrió un error inesperado",
-                        request.getRequestURI()
-                );
+        return construirRespuesta(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocurrió un error inesperado",
+                request
+        );
+    }
 
-        return ResponseEntity
-                .internalServerError()
-                .body(respuesta);
+    private ResponseEntity<ErrorRespuestaDTO> construirRespuesta(
+            HttpStatus estado,
+            String mensaje,
+            HttpServletRequest request
+    ) {
+        ErrorRespuestaDTO respuesta = new ErrorRespuestaDTO(
+                LocalDateTime.now(),
+                estado.value(),
+                estado.getReasonPhrase(),
+                mensaje,
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(estado).body(respuesta);
     }
 }
