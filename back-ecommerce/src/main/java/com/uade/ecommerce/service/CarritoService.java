@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -141,7 +142,7 @@ public class CarritoService {
         return carritoRepository.save(carrito);
     }
 
-    public Double checkout(Long usuarioId) {
+        public BigDecimal checkout(Long usuarioId) {
         Carrito carrito = buscarCarrito(usuarioId);
         List<ItemCarrito> items = carrito.getItems();
 
@@ -164,13 +165,15 @@ public class CarritoService {
             );
         }
 
-        double total = 0;
+        BigDecimal total = BigDecimal.ZERO;
 
         for (ItemCarrito item : items) {
             Producto producto = item.getProducto();
 
-            total += producto.getPrecio()
-                    * item.getCantidad();
+            total = total.add(
+                    producto.getPrecio()
+                            .multiply(BigDecimal.valueOf(item.getCantidad()))
+            );
 
             producto.setStock(
                     producto.getStock()

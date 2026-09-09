@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,7 @@ public class CarritoRespuestaDTO {
     private Long id;
     private Long usuarioId;
     private List<ItemCarritoRespuestaDTO> items;
-    private Double total;
+        private BigDecimal total;
 
     public static CarritoRespuestaDTO fromEntity(
             Carrito carrito
@@ -30,11 +31,9 @@ public class CarritoRespuestaDTO {
                                 .map(ItemCarritoRespuestaDTO::fromEntity)
                                 .toList();
 
-        double total = items.stream()
-                .mapToDouble(
-                        ItemCarritoRespuestaDTO::getSubtotal
-                )
-                .sum();
+        BigDecimal total = items.stream()
+                .map(ItemCarritoRespuestaDTO::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return new CarritoRespuestaDTO(
                 carrito.getId(),

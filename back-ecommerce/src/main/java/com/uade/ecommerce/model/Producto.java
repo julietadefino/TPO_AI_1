@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -24,8 +25,8 @@ public class Producto {
     @Column(length = 1000)
     private String descripcion;
 
-    @Column(nullable = false)
-    private Double precio;
+    @Column(nullable = false, precision = 19, scale = 2)
+    private BigDecimal precio;
 
     @Column(nullable = false)
     private Integer stock;
