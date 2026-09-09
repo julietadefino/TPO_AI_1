@@ -24,16 +24,14 @@ public class ProductoController {
     @GetMapping
     public List<ProductoRespuestaDTO> getAll(
             @RequestParam(required = false)
-            Long categoriaId
+            Long categoriaId,
+            @RequestParam(required = false)
+            String nombre,
+            @RequestParam(required = false)
+            Boolean conStock
     ) {
-        List<Producto> productos;
-
-        if (categoriaId == null) {
-            productos = productoService.getAll();
-        } else {
-            productos =
-                    productoService.getByCategoria(categoriaId);
-        }
+        List<Producto> productos =
+                productoService.buscar(categoriaId, nombre, conStock);
 
         return productos.stream()
                 .map(ProductoRespuestaDTO::fromEntity)
