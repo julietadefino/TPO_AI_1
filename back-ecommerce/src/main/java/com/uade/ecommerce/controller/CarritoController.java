@@ -1,5 +1,6 @@
 package com.uade.ecommerce.controller;
 
+import com.uade.ecommerce.dto.ActualizarCantidadItemDTO;
 import com.uade.ecommerce.dto.AgregarItemCarritoDTO;
 import com.uade.ecommerce.dto.CarritoRespuestaDTO;
 import com.uade.ecommerce.dto.CheckoutRespuestaDTO;
@@ -33,6 +34,21 @@ public class CarritoController {
         Carrito carrito = carritoService.agregarProducto(
                 datos.getUsuarioId(),
                 datos.getProductoId(),
+                datos.getCantidad()
+        );
+
+        return CarritoRespuestaDTO.fromEntity(carrito);
+    }
+
+    @PatchMapping("/{usuarioId}/items/{itemId}")
+    public CarritoRespuestaDTO actualizarCantidad(
+            @PathVariable Long usuarioId,
+            @PathVariable Long itemId,
+            @RequestBody ActualizarCantidadItemDTO datos
+    ) {
+        Carrito carrito = carritoService.actualizarCantidadItem(
+                usuarioId,
+                itemId,
                 datos.getCantidad()
         );
 

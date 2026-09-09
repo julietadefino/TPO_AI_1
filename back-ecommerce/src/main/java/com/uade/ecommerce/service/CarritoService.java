@@ -64,10 +64,6 @@ public class CarritoService {
             );
         }
 
-        if (carrito.getItems() == null) {
-            carrito.setItems(new ArrayList<>());
-        }
-
         ItemCarrito itemExistente =
                 itemCarritoRepository
                         .findByCarritoIdAndProductoId(
@@ -92,7 +88,7 @@ public class CarritoService {
             nuevoItem.setProducto(producto);
             nuevoItem.setCantidad(cantidad);
 
-            carrito.getItems().add(nuevoItem);
+            obtenerItems(carrito).add(nuevoItem);
         }
 
         return carritoRepository.save(carrito);
@@ -110,23 +106,46 @@ public class CarritoService {
 
         Carrito carrito = buscarCarrito(usuarioId);
 
-        ItemCarrito item = itemCarritoRepository
-                .findById(itemId)
-                .orElseThrow(() ->
-                        ApiException.notFound(
-                                "Ítem del carrito no encontrado"
-                        )
-                );
+        ItemCarrito item = buscarItemDelCarrito(carrito, itemId);
 
-        if (!item.getCarrito().getId()
-                .equals(carrito.getId())) {
-            throw ApiException.forbidden(
-                    "El ítem no pertenece al carrito del usuario"
+        return quitarItem(carrito, item);
+    }
+
+    public Carrito actualizarCantidadItem(
+            Long usuarioId,
+            Long itemId,
+            Integer cantidad
+    ) {
+        if (itemId == null) {
+            throw ApiException.badRequest(
+                    "El ID del ítem es obligatorio"
             );
         }
 
-        carrito.getItems().remove(item);
-        itemCarritoRepository.delete(item);
+        if (cantidad == null) {
+            throw ApiException.badRequest(
+                    "La cantidad es obligatoria"
+            );
+        }
+
+        if (cantidad < 0) {
+            throw ApiException.badRequest(
+                    "La cantidad no puede ser negativa"
+            );
+        }
+
+        Carrito carrito = buscarCarrito(usuarioId);
+
+        ItemCarrito item = buscarItemDelCarrito(carrito, itemId);
+
+        if (cantidad == 0) {
+            return quitarItem(carrito, item);
+        }
+
+        validarStock(item.getProducto(), cantidad);
+
+        item.setCantidad(cantidad);
+        itemCarritoRepository.save(item);
 
         return carritoRepository.save(carrito);
     }
@@ -134,9 +153,7 @@ public class CarritoService {
     public Carrito vaciar(Long usuarioId) {
         Carrito carrito = buscarCarrito(usuarioId);
 
-        if (carrito.getItems() != null) {
-            carrito.getItems().clear();
-        }
+        obtenerItems(carrito).clear();
 
         return carritoRepository.save(carrito);
     }
@@ -184,6 +201,47 @@ public class CarritoService {
         carritoRepository.save(carrito);
 
         return total;
+    }
+
+    private List<ItemCarrito> obtenerItems(Carrito carrito) {
+        if (carrito.getItems() == null) {
+            carrito.setItems(new ArrayList<>());
+        }
+
+        return carrito.getItems();
+    }
+
+    private ItemCarrito buscarItemDelCarrito(
+            Carrito carrito,
+            Long itemId
+    ) {
+        ItemCarrito item = itemCarritoRepository
+                .findById(itemId)
+                .orElseThrow(() ->
+                        ApiException.notFound(
+                                "Ítem del carrito no encontrado"
+                        )
+                );
+
+        if (item.getCarrito() == null
+                || !item.getCarrito().getId()
+                        .equals(carrito.getId())) {
+            throw ApiException.forbidden(
+                    "El ítem no pertenece al carrito del usuario"
+            );
+        }
+
+        return item;
+    }
+
+    private Carrito quitarItem(
+            Carrito carrito,
+            ItemCarrito item
+    ) {
+        obtenerItems(carrito).remove(item);
+        itemCarritoRepository.delete(item);
+
+        return carritoRepository.save(carrito);
     }
 
     private Carrito buscarCarrito(Long usuarioId) {
