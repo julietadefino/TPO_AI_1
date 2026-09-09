@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CarritoServiceTests {
+class GestionCarritoServiceTests {
 
     @Mock
     private CarritoRepository carritoRepository;
@@ -60,7 +60,6 @@ class CarritoServiceTests {
         producto = new Producto();
         producto.setId(5L);
         producto.setNombre("Teclado mecanico");
-        producto.setPrecio(150.0);
         producto.setStock(8);
     }
 
