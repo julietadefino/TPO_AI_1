@@ -46,6 +46,28 @@ public class ProductoService {
                 .findByCategoriaIdOrderByNombreAsc(categoriaId);
     }
 
+    /**
+     * Busqueda combinada de productos por categoria, nombre (parcial,
+     * sin distinguir mayusculas) y disponibilidad de stock. Cualquiera
+     * de los tres parametros puede omitirse (null) y esa condicion no
+     * se aplica. El resultado siempre queda ordenado alfabeticamente.
+     */
+    public List<Producto> buscar(
+            Long categoriaId,
+            String nombre,
+            Boolean conStock
+    ) {
+        String nombreFiltro = (nombre == null || nombre.isBlank())
+                ? null
+                : nombre.trim();
+
+        return productoRepository.buscar(
+                categoriaId,
+                nombreFiltro,
+                conStock
+        );
+    }
+
     public Producto crear(
             Producto producto,
             Long categoriaId,
