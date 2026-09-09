@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -203,7 +204,7 @@ public class ProductoService {
         }
 
         if (producto.getPrecio() == null ||
-                producto.getPrecio() < 0) {
+                producto.getPrecio().compareTo(BigDecimal.ZERO) < 0) {
             throw ApiException.badRequest(
                     "El precio no puede ser negativo"
             );
