@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,7 +54,7 @@ class ProductoServiceTests {
         Producto producto = new Producto();
         producto.setNombre(nombre);
         producto.setDescripcion("Descripción de " + nombre);
-        producto.setPrecio(precio);
+        producto.setPrecio(BigDecimal.valueOf(precio));
         producto.setStock(stock);
         return producto;
     }
@@ -233,7 +233,7 @@ class ProductoServiceTests {
         );
 
         assertEquals("Actualizado", actualizado.getNombre());
-        assertEquals(200.0, actualizado.getPrecio());
+        assertEquals(BigDecimal.valueOf(200.0),actualizado.getPrecio());
         assertEquals(10, actualizado.getStock());
         assertEquals(otraCategoria.getId(), actualizado.getCategoria().getId());
     }
