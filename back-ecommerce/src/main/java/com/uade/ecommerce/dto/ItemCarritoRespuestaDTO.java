@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,16 +17,15 @@ public class ItemCarritoRespuestaDTO {
     private Long id;
     private Long productoId;
     private String producto;
-    private Double precioUnitario;
+        private BigDecimal precioUnitario;
     private Integer cantidad;
-    private Double subtotal;
+        private BigDecimal subtotal;
 
     public static ItemCarritoRespuestaDTO fromEntity(
             ItemCarrito item
     ) {
-        double subtotal =
-                item.getProducto().getPrecio()
-                * item.getCantidad();
+        BigDecimal subtotal = item.getProducto().getPrecio()
+                .multiply(BigDecimal.valueOf(item.getCantidad()));
 
         return new ItemCarritoRespuestaDTO(
                 item.getId(),

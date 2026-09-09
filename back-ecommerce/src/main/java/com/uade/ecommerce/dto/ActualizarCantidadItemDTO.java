@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CheckoutRespuestaDTO {
+public class ActualizarCantidadItemDTO {
 
-    private String mensaje;
-    private BigDecimal total;
+    private Integer cantidad;
 }
