@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.uade.ecommerce.exception.ApiException;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ProductoController {
 
     @PostMapping
     public ResponseEntity<ProductoRespuestaDTO> crear(
-            @RequestBody ProductoCrearDTO datos
+            @Valid @RequestBody ProductoCrearDTO datos
     ) {
         Producto producto = new Producto();
         producto.setNombre(datos.getNombre());
@@ -79,7 +80,7 @@ public class ProductoController {
     @PatchMapping("/{id}/stock")
     public ProductoRespuestaDTO actualizarStock(
             @PathVariable Long id,
-            @RequestBody ActualizarStockDTO datos
+            @Valid @RequestBody ActualizarStockDTO datos
     ) {
         Producto actualizado =
                 productoService.actualizarStock(
@@ -103,7 +104,7 @@ public class ProductoController {
     @PutMapping("/{id}")
 public ProductoRespuestaDTO actualizar(
         @PathVariable Long id,
-        @RequestBody ProductoCrearDTO datos
+        @Valid @RequestBody ProductoCrearDTO datos
 ) {
     Producto nuevosDatos = new Producto();
     nuevosDatos.setNombre(datos.getNombre());

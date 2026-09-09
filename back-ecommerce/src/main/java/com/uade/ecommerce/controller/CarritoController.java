@@ -5,6 +5,7 @@ import com.uade.ecommerce.dto.CarritoRespuestaDTO;
 import com.uade.ecommerce.dto.CheckoutRespuestaDTO;
 import com.uade.ecommerce.model.Carrito;
 import com.uade.ecommerce.service.CarritoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class CarritoController {
 
     @PostMapping("/items")
     public CarritoRespuestaDTO agregarProducto(
-            @RequestBody AgregarItemCarritoDTO datos
+            @Valid @RequestBody AgregarItemCarritoDTO datos
     ) {
         Carrito carrito = carritoService.agregarProducto(
                 datos.getUsuarioId(),
