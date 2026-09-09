@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.uade.ecommerce.exception.ApiException;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class UsuarioController {
 
     @PostMapping("/registro")
     public ResponseEntity<UsuarioRespuestaDTO> registrar(
-            @RequestBody UsuarioRegistroDTO datos
+            @Valid @RequestBody UsuarioRegistroDTO datos
     ) {
         Usuario usuario = new Usuario();
         usuario.setNombreUsuario(datos.getNombreUsuario());
@@ -63,7 +64,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public UsuarioRespuestaDTO login(
-            @RequestBody LoginDTO datos
+            @Valid @RequestBody LoginDTO datos
     ) {
         Usuario usuario = usuarioService.login(
                 datos.getMail(),
