@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.uade.ecommerce.exception.ApiException;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<CategoriaDTO> crear(
-            @RequestBody CategoriaDTO datos
+            @Valid @RequestBody CategoriaDTO datos
     ) {
         Categoria categoria = new Categoria();
         categoria.setNombre(datos.getNombre());
@@ -55,7 +56,7 @@ public class CategoriaController {
     @PutMapping("/{id}")
     public CategoriaDTO actualizar(
             @PathVariable Long id,
-            @RequestBody CategoriaDTO datos
+            @Valid @RequestBody CategoriaDTO datos
     ) {
         Categoria actualizada =
                 categoriaService.actualizar(id, datos.getNombre());

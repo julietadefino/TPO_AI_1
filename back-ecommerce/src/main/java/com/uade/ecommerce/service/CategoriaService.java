@@ -26,8 +26,9 @@ public class CategoriaService {
     }
 
     public Optional<Categoria> getById(Long id) {
-        return categoriaRepository.findById(id);
-    }
+        validarId(id);
+    return categoriaRepository.findById(id);
+}
 
     public Categoria crear(Categoria categoria) {
         if (categoria.getNombre() == null ||
@@ -52,6 +53,7 @@ public class CategoriaService {
     }
 
     public Categoria actualizar(Long id, String nombre) {
+        validarId(id);
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() ->
                         ApiException.notFound(
@@ -82,6 +84,7 @@ public class CategoriaService {
     }
 
     public void delete(Long id) {
+        validarId(id);
         Categoria categoria = categoriaRepository.findById(id)
                 .orElseThrow(() ->
                         ApiException.notFound(
@@ -95,4 +98,12 @@ public class CategoriaService {
         }
         categoriaRepository.delete(categoria);
     }
+
+    private void validarId(Long id) {
+    if (id == null || id <= 0) {
+        throw ApiException.badRequest(
+                "El identificador de la categoría debe ser mayor a cero"
+        );
+    }
+}
 }

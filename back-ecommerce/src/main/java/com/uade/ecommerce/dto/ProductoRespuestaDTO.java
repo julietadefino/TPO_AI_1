@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,7 @@ public class ProductoRespuestaDTO {
     private Long id;
     private String nombre;
     private String descripcion;
-    private Double precio;
+        private BigDecimal precio;
     private Integer stock;
 
     private Long categoriaId;
@@ -26,16 +27,16 @@ public class ProductoRespuestaDTO {
     private Long usuarioId;
     private String nombreUsuario;
 
-    private List<String> fotos;
+    private List<FotoRespuestaDTO> fotos;
 
     public static ProductoRespuestaDTO fromEntity(
             Producto producto
     ) {
-        List<String> urlsFotos = producto.getFotos() == null
+        List<FotoRespuestaDTO> fotos = producto.getFotos() == null
                 ? List.of()
                 : producto.getFotos()
                         .stream()
-                        .map(foto -> foto.getUrl())
+                        .map(FotoRespuestaDTO::fromEntity)
                         .toList();
 
         return new ProductoRespuestaDTO(
@@ -48,7 +49,7 @@ public class ProductoRespuestaDTO {
                 producto.getCategoria().getNombre(),
                 producto.getUsuario().getId(),
                 producto.getUsuario().getNombreUsuario(),
-                urlsFotos
+                fotos
         );
     }
 }
