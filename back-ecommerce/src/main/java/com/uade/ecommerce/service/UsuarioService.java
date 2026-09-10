@@ -5,6 +5,7 @@ import com.uade.ecommerce.model.Carrito;
 import com.uade.ecommerce.model.Usuario;
 import com.uade.ecommerce.repository.CarritoRepository;
 import com.uade.ecommerce.repository.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ public class UsuarioService {
 
     @Autowired
     private CarritoRepository carritoRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<Usuario> getAll() {
         return usuarioRepository.findAll();
@@ -59,7 +63,8 @@ public class UsuarioService {
         usuario.setNombreUsuario(nombreUsuarioNormalizado);
         usuario.setNombre(usuario.getNombre().trim());
         usuario.setApellido(usuario.getApellido().trim());
-
+        usuario.setContrasenia(passwordEncoder.encode(usuario.getContrasenia())); 
+        
         Usuario usuarioGuardado =
                 usuarioRepository.save(usuario);
 
@@ -87,11 +92,11 @@ public class UsuarioService {
                         )
                 );
 
-        if (!usuario.getContrasenia().equals(contrasenia)) {
+        if (!passwordEncoder.matches(contrasenia, usuario.getContrasenia())) {
             throw ApiException.unauthorized(
                     "Usuario o contraseña incorrectos"
             );
-        }
+        } // Condicion del Password Encoder
 
         return usuario;
     }
