@@ -1,13 +1,17 @@
 package com.uade.ecommerce.controller;
 
+import com.uade.ecommerce.dto.ActualizarCantidadItemDTO;
 import com.uade.ecommerce.dto.AgregarItemCarritoDTO;
 import com.uade.ecommerce.dto.CarritoRespuestaDTO;
 import com.uade.ecommerce.dto.CheckoutRespuestaDTO;
 import com.uade.ecommerce.model.Carrito;
 import com.uade.ecommerce.service.CarritoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/carritos")
@@ -28,11 +32,26 @@ public class CarritoController {
 
     @PostMapping("/items")
     public CarritoRespuestaDTO agregarProducto(
-            @RequestBody AgregarItemCarritoDTO datos
+            @Valid @RequestBody AgregarItemCarritoDTO datos
     ) {
         Carrito carrito = carritoService.agregarProducto(
                 datos.getUsuarioId(),
                 datos.getProductoId(),
+                datos.getCantidad()
+        );
+
+        return CarritoRespuestaDTO.fromEntity(carrito);
+    }
+
+    @PatchMapping("/{usuarioId}/items/{itemId}")
+    public CarritoRespuestaDTO actualizarCantidad(
+            @PathVariable Long usuarioId,
+            @PathVariable Long itemId,
+            @RequestBody ActualizarCantidadItemDTO datos
+    ) {
+        Carrito carrito = carritoService.actualizarCantidadItem(
+                usuarioId,
+                itemId,
                 datos.getCantidad()
         );
 
@@ -66,7 +85,7 @@ public class CarritoController {
     public ResponseEntity<CheckoutRespuestaDTO> checkout(
             @PathVariable Long usuarioId
     ) {
-        Double total =
+        BigDecimal total =
                 carritoService.checkout(usuarioId);
 
         CheckoutRespuestaDTO respuesta =

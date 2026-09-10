@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,28 @@ public class ProductoService {
     public List<Producto> getByCategoria(Long categoriaId) {
         return productoRepository
                 .findByCategoriaIdOrderByNombreAsc(categoriaId);
+    }
+
+    /**
+     * Busqueda combinada de productos por categoria, nombre (parcial,
+     * sin distinguir mayusculas) y disponibilidad de stock. Cualquiera
+     * de los tres parametros puede omitirse (null) y esa condicion no
+     * se aplica. El resultado siempre queda ordenado alfabeticamente.
+     */
+    public List<Producto> buscar(
+            Long categoriaId,
+            String nombre,
+            Boolean conStock
+    ) {
+        String nombreFiltro = (nombre == null || nombre.isBlank())
+                ? null
+                : nombre.trim();
+
+        return productoRepository.buscar(
+                categoriaId,
+                nombreFiltro,
+                conStock
+        );
     }
 
     public Producto crear(
@@ -267,7 +290,7 @@ public class ProductoService {
         }
 
         if (producto.getPrecio() == null ||
-                producto.getPrecio() < 0) {
+                producto.getPrecio().compareTo(BigDecimal.ZERO) < 0) {
             throw ApiException.badRequest(
                     "El precio no puede ser negativo"
             );

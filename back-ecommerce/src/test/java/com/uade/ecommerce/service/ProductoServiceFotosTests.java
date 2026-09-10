@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import java.math.BigDecimal;
 
 /**
  * Pruebas de la gestión de fotos de un producto: validación de URLs,
@@ -377,7 +378,7 @@ class ProductoServiceFotosTests {
         Producto producto = new Producto();
         producto.setNombre("Remera");
         producto.setDescripcion("Remera de algodón");
-        producto.setPrecio(1500.0);
+        producto.setPrecio(BigDecimal.valueOf(1500.0));
         producto.setStock(10);
 
         return producto;
