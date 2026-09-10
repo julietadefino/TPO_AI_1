@@ -144,8 +144,8 @@ class ProductoServiceTests {
         otraCategoria.setNombre("Hogar");
         otraCategoria = categoriaRepository.save(otraCategoria);
 
-        productoService.crear(nuevoProducto("Mouse", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u1"));
-        productoService.crear(nuevoProducto("Silla", 100.0, 5), otraCategoria.getId(), usuario.getId(), List.of("u2"));
+        productoService.crear(nuevoProducto("Mouse", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
+        productoService.crear(nuevoProducto("Silla", 100.0, 5), otraCategoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u2.jpg"));
 
         List<Producto> resultado = productoService.buscar(categoria.getId(), null, null);
 
@@ -155,8 +155,8 @@ class ProductoServiceTests {
 
     @Test
     void filtraPorNombreParcialSinImportarMayusculas() {
-        productoService.crear(nuevoProducto("Mouse Inalámbrico", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u1"));
-        productoService.crear(nuevoProducto("Teclado", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u2"));
+        productoService.crear(nuevoProducto("Mouse Inalámbrico", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
+        productoService.crear(nuevoProducto("Teclado", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
 
         List<Producto> resultado = productoService.buscar(null, "mouse", null);
 
@@ -166,8 +166,8 @@ class ProductoServiceTests {
 
     @Test
     void filtraPorDisponibilidadDeStock() {
-        productoService.crear(nuevoProducto("Con Stock", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u1"));
-        productoService.crear(nuevoProducto("Sin Stock", 100.0, 0), categoria.getId(), usuario.getId(), List.of("u2"));
+        productoService.crear(nuevoProducto("Con Stock", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
+        productoService.crear(nuevoProducto("Sin Stock", 100.0, 0), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u2.jpg"));
 
         List<Producto> conStock = productoService.buscar(null, null, true);
         List<Producto> sinStock = productoService.buscar(null, null, false);
@@ -181,9 +181,9 @@ class ProductoServiceTests {
 
     @Test
     void buscaTodosOrdenadosAlfabeticamente() {
-        productoService.crear(nuevoProducto("Zapatillas", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u1"));
-        productoService.crear(nuevoProducto("Auriculares", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u2"));
-        productoService.crear(nuevoProducto("Monitor", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u3"));
+        productoService.crear(nuevoProducto("Zapatillas", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
+        productoService.crear(nuevoProducto("Auriculares", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u2.jpg"));
+        productoService.crear(nuevoProducto("Monitor", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u3.jpg"));
 
         List<Producto> resultado = productoService.buscar(null, null, null);
 
@@ -198,8 +198,8 @@ class ProductoServiceTests {
         otraCategoria.setNombre("Deportes");
         otraCategoria = categoriaRepository.save(otraCategoria);
 
-        productoService.crear(nuevoProducto("Mouse Gamer", 100.0, 5), categoria.getId(), usuario.getId(), List.of("u1"));
-        productoService.crear(nuevoProducto("Mouse Pad", 100.0, 5), otraCategoria.getId(), usuario.getId(), List.of("u2"));
+        productoService.crear(nuevoProducto("Mouse Gamer", 100.0, 5), categoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u1.jpg"));
+        productoService.crear(nuevoProducto("Mouse Pad", 100.0, 5), otraCategoria.getId(), usuario.getId(), List.of("https://img.ejemplo.com/u2.jpg"));
 
         List<Producto> resultado = productoService.buscar(categoria.getId(), "mouse", null);
 
@@ -219,7 +219,7 @@ class ProductoServiceTests {
                 nuevoProducto("Original", 100.0, 5),
                 categoria.getId(),
                 usuario.getId(),
-                List.of("u1")
+                List.of("https://img.ejemplo.com/u1.jpg")
         );
 
         Producto nuevosDatos = nuevoProducto("Actualizado", 200.0, 10);
@@ -229,7 +229,7 @@ class ProductoServiceTests {
                 usuario.getId(),
                 nuevosDatos,
                 otraCategoria.getId(),
-                List.of("u2")
+                List.of("https://img.ejemplo.com/u2.jpg")
         );
 
         assertEquals("Actualizado", actualizado.getNombre());
@@ -258,7 +258,7 @@ class ProductoServiceTests {
                 nuevoProducto("Original", 100.0, 5),
                 categoria.getId(),
                 usuario.getId(),
-                List.of("u1")
+                List.of("https://img.ejemplo.com/u1.jpg")
         );
 
         ApiException ex = assertThrows(
@@ -268,7 +268,7 @@ class ProductoServiceTests {
                         otroUsuario.getId(),
                         nuevoProducto("Hackeado", 1.0, 1),
                         categoria.getId(),
-                        List.of("u2")
+                        List.of("https://img.ejemplo.com/u2.jpg")
                 )
         );
 
@@ -283,7 +283,7 @@ class ProductoServiceTests {
                 nuevoProducto("Original", 100.0, 5),
                 categoria.getId(),
                 usuario.getId(),
-                List.of("u1")
+                List.of("https://img.ejemplo.com/u1.jpg")
         );
 
         ApiException ex = assertThrows(
